@@ -1,49 +1,82 @@
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Scanner;
-
 public class PalindromeCheckerApp {
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+    static class Node {
+        char data;
+        Node next;
 
-        System.out.println("--- Deque-Based Palindrome Checker ---");
-        System.out.print("Enter a string to check: ");
-        String input = scanner.nextLine();
-
-        if (isPalindrome(input)) {
-            System.out.println("Result: '" + input + "' is a palindrome.");
-        } else {
-            System.out.println("Result: '" + input + "' is NOT a palindrome.");
+        Node(char data) {
+            this.data = data;
+            this.next = null;
         }
-
-        scanner.close();
     }
 
-    public static boolean isPalindrome(String input) {
-        // Cleanup: remove non-alphanumeric and convert to lowercase
-        String cleanInput = input.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-
-        if (cleanInput.isEmpty()) return true;
-
-
-        Deque<Character> deque = new ArrayDeque<>();
-
-
-        for (char ch : cleanInput.toCharArray()) {
-            deque.addLast(ch);
-        }
-
-
-        while (deque.size() > 1) {
-            Character front = deque.removeFirst();
-            Character rear = deque.removeLast();
-
-            if (!front.equals(rear)) {
-                return false; // Mismatch found
+    static Node buildList(String input) {
+        Node head = null;
+        Node tail = null;
+        for (char c : input.toCharArray()) {
+            Node newNode = new Node(c);
+            if (head == null) {
+                head = newNode;
+                tail = newNode;
+            } else {
+                tail.next = newNode;
+                tail = newNode;
             }
         }
+        return head;
+    }
 
-        return true; // All pairs matched
+    static Node findMiddle(Node head) {
+        Node slow = head;
+        Node fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+
+    static Node reverseList(Node head) {
+        Node prev = null;
+        Node curr = head;
+        while (curr != null) {
+            Node next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
+    static boolean checkPalindrome(String input) {
+        Node head = buildList(input);
+
+        Node middle = findMiddle(head);
+        Node secondHalf = reverseList(middle);
+
+        Node first = head;
+        Node second = secondHalf;
+
+        boolean isPalindrome = true;
+
+        while (second != null) {
+            if (first.data != second.data) {
+                isPalindrome = false;
+                break;
+            }
+            first = first.next;
+            second = second.next;
+        }
+
+        return isPalindrome;
+    }
+
+    public static void main(String[] args) {
+        String input = "madam";
+
+        boolean isPalindrome = checkPalindrome(input);
+
+        System.out.println("Input : " + input);
+        System.out.println("Is Palindrome? : " + isPalindrome);
     }
 }
