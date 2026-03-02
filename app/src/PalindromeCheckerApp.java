@@ -4,24 +4,28 @@ public class PalindromeCheckerApp {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("--- Palindrome Checker (UC3: String Reverse) ---");
-        System.out.print("Enter a string to check: ");
-        String original = scanner.nextLine();
+        System.out.println("--- Palindrome Checker (Character Array) ---");
+        System.out.print("Enter a string: ");
+        String input = scanner.nextLine();
 
 
-        String cleaned = original.replaceAll("\\s+", "").toLowerCase();
+        char[] charArray = input.toCharArray();
+        boolean isPalindrome = true;
+        int n = charArray.length;
 
 
-        String reversed = new StringBuilder(cleaned).reverse().toString();
+        for (int i = 0; i < n / 2; i++) {
+            if (charArray[i] != charArray[n - 1 - i]) {
+                isPalindrome = false;
+                break;
+            }
+        }
 
 
-        System.out.println("Original (Cleaned): " + cleaned);
-        System.out.println("Reversed: " + reversed);
-
-        if (cleaned.equals(reversed)) {
-            System.out.println("Result: '" + original + "' is a palindrome.");
+        if (isPalindrome) {
+            System.out.println("\"" + input + "\" is a palindrome.");
         } else {
-            System.out.println("Result: '" + original + "' is NOT a palindrome.");
+            System.out.println("\"" + input + "\" is not a palindrome.");
         }
 
         scanner.close();
